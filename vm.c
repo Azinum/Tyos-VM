@@ -15,6 +15,8 @@
 
 #define stack_get(delta) (vm->stack[vm->top + delta])
 
+#define type_check(obj0, obj1, t) (obj0.type == obj1.type && obj0.type == t)
+
 #define op_arith(op) stack_get(-1).value.i op stack_top().value.i; stack_pop()
 
 void vm_init(TyosVM_state* vm) {
@@ -28,6 +30,10 @@ void vm_print_top(TyosVM_state* vm) {
 	switch (obj.type) {
 		case T_INT:
 			printf("%i\n", obj.value.i);
+			break;
+
+		case T_STRING:
+			printf("%s\n", obj.value.s);
 			break;
 
 		default:
@@ -56,19 +62,23 @@ int vm_exec(TyosVM_state* vm, char* code) {
 				break;
 
 			case I_ADD:
-				op_arith(+=);
+				if (type_check(stack_get(-1), stack_top(), T_INT))
+					op_arith(+=);
 				break;
 
 			case I_SUB:
-				op_arith(-=);
+				if (type_check(stack_get(-1), stack_top(), T_INT))
+					op_arith(-=);
 				break;
 
 			case I_MULT:
-				op_arith(*=);
+				if (type_check(stack_get(-1), stack_top(), T_INT))
+					op_arith(*=);
 				break;
 
 			case I_DIV:
-				op_arith(/=);
+				if (type_check(stack_get(-1), stack_top(), T_INT))
+					op_arith(/=);
 				break;
 
 
@@ -78,6 +88,28 @@ int vm_exec(TyosVM_state* vm, char* code) {
 					T_INT
 				}));
 				vm->ip += sizeof(int);
+			}
+				break;
+
+			case I_PUSH_STR: {
+				unsigned int size = 0;
+				while (1) {
+					if (code[vm->ip + size] == '\0') {
+						break;
+					}
+					size++;
+				}
+				char* str = (char*)malloc(sizeof(char) * size);
+				const unsigned int limit = size;
+				while (size--) {
+					str[size] = code[vm->ip + size];
+				};
+				vm->ip += limit;
+
+				stack_push(((Object){
+				 	{.s = str},
+				 	T_STRING
+				}));
 			}
 				break;
 

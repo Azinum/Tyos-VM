@@ -17,18 +17,21 @@ enum Instructions {
 	I_EXIT = 0,
 	I_SKIP,
 	I_PUSH_INT,
+	I_PUSH_STR,
 
 	I_ADD,
 	I_SUB,
 	I_MULT,
 	I_DIV,
 
-	T_INT
+	T_INT,
+	T_STRING,
 };
 
 typedef struct Object {
 	union {
 		int i;
+		char* s;
 		void* p;
 	} value;
 	char type;
