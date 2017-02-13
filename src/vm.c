@@ -19,6 +19,8 @@
 
 #define op_arith(op) stack_get(-1).value.i op stack_top().value.i; stack_pop()
 
+#define MAX_ITER 1024 << 14  /* ~16 million */
+
 void vm_init(TyosVM_state* vm) {
 	vm->stack_size = array_size(vm->stack);
 	vm->top = 0;
@@ -93,12 +95,15 @@ int vm_exec(TyosVM_state* vm, char* code) {
 
 			case I_PUSH_STR: {
 				unsigned int size = 0;
-				while (1) {
+				do {
 					if (code[vm->ip + size] == '\0') {
 						break;
 					}
-					size++;
-				}
+					if (size > MAX_ITER) {
+						printf("%s\n", "Iteration limit reached! Forgot to null terminate string?");
+						return 0;
+					}
+				} while (size++);
 				char* str = (char*)malloc(sizeof(char) * size);
 				const unsigned int limit = size;
 				while (size--) {

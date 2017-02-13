@@ -5,6 +5,7 @@
 
 #include "vm.h"
 
+
 int main(int argc, const char* argv[]) {
 	char code[] = {
 		I_SKIP,
