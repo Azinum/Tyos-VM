@@ -17,4 +17,4 @@ all: default
 
 default:
 	$(CC) -o $(NAME) $(FILES) $(FLAGS)
-	./$(NAME)
+	clear; ./$(NAME)
