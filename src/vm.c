@@ -63,9 +63,23 @@ int vm_exec(TyosVM_state* vm, char* code) {
 			case I_SKIP:
 				break;
 
-			case I_ADD:
-				if (type_check(stack_get(-1), stack_top(), T_INT))
+			case I_ADD: {
+				if (type_check(stack_get(-1), stack_top(), T_INT)) {
 					op_arith(+=);
+					break;
+				}
+				if (type_check(stack_get(-1), stack_top(), T_STRING)) {
+					char* left = stack_get(-1).value.s;
+					char* right = stack_top().value.s;
+					unsigned long right_size = strlen(right);
+					unsigned long left_size = strlen(left);
+					left = (char*)realloc(left, left_size + right_size + 1);
+					for (unsigned long i = left_size; i < left_size + right_size + 1; i++) {
+						left[i] = right[i - left_size];
+					}
+					stack_pop();
+				}
+			}
 				break;
 
 			case I_SUB:
@@ -95,7 +109,7 @@ int vm_exec(TyosVM_state* vm, char* code) {
 
 			case I_PUSH_STR: {
 				unsigned int size = 0;
-				do {
+				while (1) {
 					if (code[vm->ip + size] == '\0') {
 						break;
 					}
@@ -103,14 +117,14 @@ int vm_exec(TyosVM_state* vm, char* code) {
 						printf("%s\n", "Iteration limit reached! Forgot to null terminate string?");
 						return 0;
 					}
-				} while (size++);
+					size++;
+				};
 				char* str = (char*)malloc(sizeof(char) * size);
 				const unsigned int limit = size;
 				while (size--) {
 					str[size] = code[vm->ip + size];
 				};
-				vm->ip += limit;
-
+				vm->ip += limit + 1;
 				stack_push(((Object){
 				 	{.s = str},
 				 	T_STRING
