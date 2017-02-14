@@ -16,6 +16,7 @@
 enum Instructions {
 	I_EXIT = 0,
 	I_SKIP,
+	I_JUMP,
 	I_PUSH_INT,
 	I_PUSH_STR,
 

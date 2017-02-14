@@ -9,9 +9,8 @@
 int main(int argc, const char* argv[]) {
 	char code[] = {
 		I_SKIP,
-		I_PUSH_STR, 'H', 'e', 'y', ' ', '\0',
-		I_PUSH_STR, 'Y', 'o', 'u', '\0',
-		I_ADD,
+		I_JUMP, 05, 00, 00, 00,
+		I_PUSH_INT, 05, 00, 00, 00,
 		I_EXIT,
 	};
 

@@ -98,6 +98,11 @@ int vm_exec(TyosVM_state* vm, char* code) {
 				break;
 
 
+			case I_JUMP: {
+				vm->ip += *(int*)&code[vm->ip];
+			}
+				break;
+
 			case I_PUSH_INT: {
 				stack_push(((Object){
 					{.i = *(int*)&code[vm->ip]},
