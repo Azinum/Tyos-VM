@@ -25,6 +25,11 @@ void vm_init(TyosVM_state* vm) {
 	vm->stack_size = array_size(vm->stack);
 	vm->top = 0;
 	vm->ip = 0;
+	vm->fn_size = array_size(vm->functions);
+
+	for (unsigned int i = 0; i < vm->fn_size; i++) {
+		vm->functions[i] = 0;
+	}
 }
 
 void vm_print_top(TyosVM_state* vm) {
@@ -53,14 +58,36 @@ TyosVM_state* vm_create() {
 	return vm;
 }
 
-int vm_exec(TyosVM_state* vm, char* code) {
+int vm_exec(TyosVM_state* vm, char* code, unsigned int size) {
 	if (!code) {	/* Just in case */
 		return 1;
 	}
 
+	unsigned int prog_size = size;
+
 	for (;;) {
 		switch (code[vm->ip++]) {
 			case I_SKIP:
+				break;
+
+			case I_DEF: {
+				unsigned int id, size;
+				id = *(int*)&code[vm->ip];
+				vm->ip += (int)sizeof(int);
+				size = *(int*)&code[vm->ip];
+				vm->ip += (int)sizeof(int);
+
+				if (id > vm->fn_size) {
+					printf("Failed to allocate function. Index exceeded the limit of %i (Requested id was: %i).\n", vm->fn_size, id);
+					return 0;
+				}
+				if (vm->ip + size > prog_size) {
+					printf("Function size is too big. Size exceeds the program total size. %i over %i.\n", vm->ip + size, prog_size);
+					return 0;
+				}
+				vm->functions[id] = vm->ip;
+				vm->ip += size;	/* So that the function will not get executed */
+			}
 				break;
 
 			case I_ADD: {
@@ -119,7 +146,7 @@ int vm_exec(TyosVM_state* vm, char* code) {
 						break;
 					}
 					if (size > MAX_ITER) {
-						printf("%s\n", "Iteration limit reached! Forgot to null terminate string?");
+						printf("(ip: %i) %s\n", vm->ip, "Iteration limit reached! Forgot to null terminate string?");
 						return 0;
 					}
 					size++;
