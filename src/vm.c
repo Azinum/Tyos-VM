@@ -81,6 +81,12 @@ int vm_exec(TyosVM_state* vm, char* code, unsigned int size) {
 					printf("Failed to allocate function. Index exceeded the limit of %i (Requested id was: %i).\n", vm->fn_size, id);
 					return 0;
 				}
+
+				if (vm->functions[id]) {
+					printf("Failed to allocate function. Address is already in use.\n");
+					return 0;
+				}
+
 				if (vm->ip + size > prog_size) {
 					printf("Function size is too big. Size exceeds the program total size. %i over %i.\n", vm->ip + size, prog_size);
 					return 0;
