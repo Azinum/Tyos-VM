@@ -74,6 +74,12 @@ int vm_exec(TyosVM_state* vm, char* code, unsigned int size) {
 				printf("ALERT(%i)\n", vm->ip);
 				break;
 
+			case I_CALL: {
+				unsigned int id = *(int*)&code[vm->ip];
+				vm->ip = vm->functions[id];
+			}
+				break;
+
 			case I_DEF: {
 				unsigned int id, size;
 				id = *(int*)&code[vm->ip];

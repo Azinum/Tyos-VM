@@ -15,18 +15,11 @@ def, (int)id, (int)size,
 int main(int argc, const char* argv[]) {
 	char code[] = {
 		I_DEF,
-	      0x0, 00, 00, 00,	/* ID */
-		  0x5, 0x0, 00, 00,	/* SIZE */
-		1, 1, 1, 1, 1,
-		I_DEF,
-	      0x1, 00, 00, 00,	/* ID */
-		  0x5, 0x0, 00, 00,	/* SIZE */
-		1, 1, 1, 1, 1,
-		I_DEF,
-	      0x2, 00, 00, 00,	/* ID */
-		  0x5, 0x0, 00, 00,	/* SIZE */
-		1, 1, 1, 1, 1,
+	      00, 00, 00, 00,	/* ID */
+		  0x1, 0x0, 00, 00,	/* SIZE */
 		I_ALERT,
+		I_CALL,
+		  00, 00, 00, 00,
 		I_EXIT,
 	};
 
