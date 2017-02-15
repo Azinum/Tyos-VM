@@ -15,7 +15,7 @@ def, (int)id, (int)size,
 int main(int argc, const char* argv[]) {
 	char code[] = {
 		I_DEF,
-	      0x2, 00, 00, 00,	/* ID */
+	      0x0, 00, 00, 00,	/* ID */
 		  0x5, 0x0, 00, 00,	/* SIZE */
 		1, 1, 1, 1, 1,
 		I_DEF,
@@ -26,6 +26,7 @@ int main(int argc, const char* argv[]) {
 	      0x2, 00, 00, 00,	/* ID */
 		  0x5, 0x0, 00, 00,	/* SIZE */
 		1, 1, 1, 1, 1,
+		I_ALERT,
 		I_EXIT,
 	};
 

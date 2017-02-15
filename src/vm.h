@@ -16,6 +16,7 @@
 enum Instructions {
 	I_EXIT = 0,
 	I_SKIP,
+	I_ALERT,
 	I_DEF,	/* define (int)id, (int)size */
 	I_JUMP,	/* jump n (bytes) */
 	I_PUSH_INT,
