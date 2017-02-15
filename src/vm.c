@@ -76,6 +76,10 @@ int vm_exec(TyosVM_state* vm, char* code, unsigned int size) {
 
 			case I_CALL: {
 				unsigned int id = *(int*)&code[vm->ip];
+				if (!vm->functions[id]) {
+					printf("%s\n", "Failed to do call. Function does not exist.");
+					return 0;
+				}
 				vm->ip = vm->functions[id];
 			}
 				break;
