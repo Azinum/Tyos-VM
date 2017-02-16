@@ -59,7 +59,7 @@ TyosVM_state* vm_create() {
 }
 
 int vm_exec(TyosVM_state* vm, char* code, unsigned int size) {
-	if (!code) {	/* Just in case */
+	if (!code || size < 1) {	/* Just in case */
 		return 1;
 	}
 
