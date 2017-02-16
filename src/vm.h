@@ -18,12 +18,12 @@ enum Instructions {
 	I_SKIP,
 	I_ALERT,
 	I_CALL,	/* call (int)id */
+	I_RET,
 	I_DEF,	/* define (int)id, (int)size */
 	I_JUMP,	/* jump n (bytes) */
 	I_PUSH_INT,
 	I_PUSH_STR,
 	I_POP,
-	I_RET,
 
 	I_ADD,
 	I_SUB,

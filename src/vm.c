@@ -17,7 +17,12 @@
 
 #define type_check(obj0, obj1, t) (obj0.type == obj1.type && obj0.type == t)
 
-#define op_arith(op) stack_get(-1).value.i op stack_top().value.i; stack_pop()
+#define op_arith(op) { \
+	if (type_check(stack_get(-1), stack_top(), T_INT)) { \
+		stack_get(-1).value.i op stack_top().value.i; stack_pop(); \
+		break; \
+	} \
+} 
 
 #define MAX_ITER 1024 << 14  /* ~16 million */
 
@@ -117,41 +122,6 @@ int vm_exec(TyosVM_state* vm, char* code, unsigned int size) {
 			}
 				break;
 
-			case I_ADD: {
-				if (type_check(stack_get(-1), stack_top(), T_INT)) {
-					op_arith(+=);
-					break;
-				}
-				if (type_check(stack_get(-1), stack_top(), T_STRING)) {
-					char* left = stack_get(-1).value.s;
-					char* right = stack_top().value.s;
-					unsigned long right_size = strlen(right);
-					unsigned long left_size = strlen(left);
-					left = (char*)realloc(left, left_size + right_size + 1);
-					for (unsigned long i = left_size; i < left_size + right_size + 1; i++) {
-						left[i] = right[i - left_size];
-					}
-					stack_pop();
-				}
-			}
-				break;
-
-			case I_SUB:
-				if (type_check(stack_get(-1), stack_top(), T_INT))
-					op_arith(-=);
-				break;
-
-			case I_MULT:
-				if (type_check(stack_get(-1), stack_top(), T_INT))
-					op_arith(*=);
-				break;
-
-			case I_DIV:
-				if (type_check(stack_get(-1), stack_top(), T_INT))
-					op_arith(/=);
-				break;
-
-
 			case I_JUMP: {
 				vm->ip += *(int*)&code[vm->ip];
 			}
@@ -184,7 +154,7 @@ int vm_exec(TyosVM_state* vm, char* code, unsigned int size) {
 					str[size] = code[vm->ip + size];
 				};
 				vm->ip += limit + 1;
-				stack_push(((Object){
+				stack_push(((Object) {
 				 	{.s = str},
 				 	T_STRING
 				}));
@@ -194,6 +164,36 @@ int vm_exec(TyosVM_state* vm, char* code, unsigned int size) {
 			case I_POP: {
 				vm->top > 0 ? stack_pop() : (void)0;
 			}
+				break;
+
+			case I_ADD: {
+				op_arith(+=);
+
+				if (type_check(stack_get(-1), stack_top(), T_STRING)) {
+					char* left = stack_get(-1).value.s;
+					char* right = stack_top().value.s;
+					unsigned long right_size = strlen(right);
+					unsigned long left_size = strlen(left);
+					left = (char*)realloc(left, left_size + right_size + 1);
+					for (unsigned long i = left_size; i < left_size + right_size + 1; i++) {
+						left[i] = right[i - left_size];
+					}
+					stack_pop();
+				}
+			}
+				break;
+
+			case I_SUB:
+				op_arith(-=);
+				break;
+
+			case I_MULT:
+				op_arith(*=);
+				break;
+
+			case I_DIV:
+				op_arith(/=);
+				break;
 
 			case I_EXIT:
 				vm_print_top(vm);

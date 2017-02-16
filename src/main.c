@@ -10,11 +10,10 @@ int main(int argc, const char* argv[]) {
 	char code[] = {
 		I_DEF,
 	      1, 0, 0, 0,	/* ID */
-		  17, 0, 0, 0,	/* SIZE */
+		  12, 0, 0, 0,	/* SIZE */
 		  I_PUSH_INT, 9, 00, 00, 00,
 		  I_PUSH_INT, 8, 00, 00, 00,
 		  I_ADD,
-		  I_CALL, 0x1, 00, 00, 00,
 		  I_RET,
 		I_CALL, 0x1, 00, 00, 00,
 		I_EXIT,
