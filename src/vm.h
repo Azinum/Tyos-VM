@@ -22,6 +22,7 @@ enum Instructions {
 	I_JUMP,	/* jump n (bytes) */
 	I_PUSH_INT,
 	I_PUSH_STR,
+	I_POP,
 
 	I_ADD,
 	I_SUB,

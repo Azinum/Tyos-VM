@@ -15,14 +15,12 @@ def, (int)id, (int)size,
 int main(int argc, const char* argv[]) {
 	char code[] = {
 		I_DEF,
-	      0x1, 00, 00, 00,	/* ID */
-		  0x1, 0x0, 00, 00,	/* SIZE */
-		I_ALERT,
-		I_CALL,
-		  00, 00, 00, 00,
+	      1, 0, 0, 0,	/* ID */
+		  5, 0, 0, 0,	/* SIZE */
+		I_ALERT, I_ALERT, I_ALERT, I_ALERT, I_ALERT,
+		I_CALL, 0x1, 00, 00, 00,
 		I_EXIT,
 	};
-
 	TyosVM_state* vm = vm_create();
 	vm_exec(vm, code, array_size(code));
 	vm_free(vm);

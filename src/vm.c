@@ -165,7 +165,7 @@ int vm_exec(TyosVM_state* vm, char* code, unsigned int size) {
 					if (code[vm->ip + size] == '\0') {
 						break;
 					}
-					if (size > MAX_ITER) {
+					if (size > MAX_ITER || size > prog_size) {
 						printf("(ip: %i) %s\n", vm->ip, "Iteration limit reached! Forgot to null terminate string?");
 						return 0;
 					}
@@ -183,6 +183,10 @@ int vm_exec(TyosVM_state* vm, char* code, unsigned int size) {
 				}));
 			}
 				break;
+
+			case I_POP: {
+				vm->top > 0 ? stack_pop() : (void)0;
+			}
 
 			case I_EXIT:
 				vm_print_top(vm);
