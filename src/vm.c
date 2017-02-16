@@ -26,6 +26,7 @@ void vm_init(TyosVM_state* vm) {
 	vm->top = 0;
 	vm->ip = 0;
 	vm->fn_size = array_size(vm->functions);
+	vm->ret_addr = 0;
 
 	for (unsigned int i = 0; i < vm->fn_size; i++) {
 		vm->functions[i] = 0;
@@ -80,7 +81,13 @@ int vm_exec(TyosVM_state* vm, char* code, unsigned int size) {
 					printf("%s\n", "Failed to do call. Function does not exist.");
 					return 0;
 				}
+				vm->ret_addr = vm->ip + sizeof(int);
 				vm->ip = vm->functions[id];
+			}
+				break;
+
+			case I_RET: {
+				vm->ip = vm->ret_addr;
 			}
 				break;
 

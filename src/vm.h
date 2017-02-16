@@ -23,6 +23,7 @@ enum Instructions {
 	I_PUSH_INT,
 	I_PUSH_STR,
 	I_POP,
+	I_RET,
 
 	I_ADD,
 	I_SUB,
@@ -49,6 +50,7 @@ typedef struct TyosVM_state {
 	unsigned int ip;	/* instruction pointer */
 	unsigned int functions[255];	/* internal functions / macros */
 	unsigned int fn_size;
+	unsigned int ret_addr;
 } TyosVM_state;
 
 void vm_init(TyosVM_state* vm);
