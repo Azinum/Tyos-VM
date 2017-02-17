@@ -36,7 +36,7 @@ enum Instructions {
 
 typedef struct Object {
 	union {
-		int i;
+		double n;
 		char* s;
 		void* p;
 	} value;

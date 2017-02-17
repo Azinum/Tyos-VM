@@ -19,7 +19,7 @@
 
 #define op_arith(op) { \
 	if (type_check(stack_get(-1), stack_top(), T_INT)) { \
-		stack_get(-1).value.i op stack_top().value.i; stack_pop(); \
+		stack_get(-1).value.n op stack_top().value.n; stack_pop(); \
 		break; \
 	} \
 } 
@@ -42,7 +42,7 @@ void vm_print_top(TyosVM_state* vm) {
 	const struct Object obj = vm->stack[vm->top];
 	switch (obj.type) {
 		case T_INT:
-			printf("%i\n", obj.value.i);
+			printf("%.6g\n", obj.value.n);
 			break;
 
 		case T_STRING:
@@ -129,7 +129,7 @@ int vm_exec(TyosVM_state* vm, char* code, unsigned int size) {
 
 			case I_PUSH_INT: {
 				stack_push(((Object){
-					{.i = *(int*)&code[vm->ip]},
+					{.n = *(int*)&code[vm->ip]},
 					T_INT
 				}));
 				vm->ip += sizeof(int);
