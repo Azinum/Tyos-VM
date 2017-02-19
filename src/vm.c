@@ -84,6 +84,7 @@ int vm_exec(TyosVM_state* vm, char* code, unsigned int size) {
 				if (vm->top > 0 && (int)code[vm->ip] <= array_size(vm->registers)) {
 					obj = stack_top();
 					vm->registers[(int)code[vm->ip]] = obj;
+					vm->ip++;
 					break;
 				}
 				printf("%s\n", "Store instruction failed");
@@ -172,7 +173,7 @@ int vm_exec(TyosVM_state* vm, char* code, unsigned int size) {
 				break;
 
 			case I_POP: {
-				vm->top > 0 ? stack_pop() : (void)0;
+				vm->top > 0 ? stack_pop() : printf("Failed to pop stack top\n");;
 			}
 				break;
 
