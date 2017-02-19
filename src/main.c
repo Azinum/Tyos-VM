@@ -18,6 +18,7 @@ int main(int argc, const char* argv[]) {
 	char code[] = {
 		I_PUSH_INT, 18, 00, 00, 00,
 		I_STORE, 0,
+		I_POP,
 		I_EXIT
 	};
 

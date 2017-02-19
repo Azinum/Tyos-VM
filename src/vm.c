@@ -4,7 +4,6 @@
 */
 
 #include "vm.h"
-#include "table.h"
 
 
 #define stack_push(obj) (vm->stack[++vm->top] = obj)
