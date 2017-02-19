@@ -80,6 +80,17 @@ int vm_exec(TyosVM_state* vm, char* code, unsigned int size) {
 				printf("ALERT(%i)\n", vm->ip);
 				break;
 
+			case I_STORE: {
+				struct Object obj;
+				if (vm->top > 0 && (int)code[vm->ip] <= array_size(vm->registers)) {
+					obj = stack_top();
+					vm->registers[(int)code[vm->ip]] = obj;
+					break;
+				}
+				printf("%s\n", "Store instruction failed");
+			}
+				break;
+
 			case I_CALL: {
 				unsigned int id = *(int*)&code[vm->ip];
 				if (!vm->functions[id]) {

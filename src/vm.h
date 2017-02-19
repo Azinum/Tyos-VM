@@ -17,6 +17,7 @@ enum Instructions {
 	I_EXIT = 0,
 	I_SKIP,
 	I_ALERT,
+	I_STORE,
 	I_CALL,	/* call (int)id */
 	I_RET,
 	I_DEF,	/* define (int)id, (int)size */
@@ -45,10 +46,11 @@ typedef struct Object {
 
 typedef struct TyosVM_state {
 	struct Object stack[64];
+	struct Object registers[255];	/* store variables here */
 	unsigned long stack_size;
 	unsigned char top;	/* stack will not exceed the 255 mark */
 	unsigned int ip;	/* instruction pointer */
-	unsigned int functions[255];	/* internal functions / macros */
+	unsigned int functions[255];	/* internal functions */
 	unsigned int fn_size;
 	unsigned int ret_addr;
 } TyosVM_state;
