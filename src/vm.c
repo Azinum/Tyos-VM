@@ -88,6 +88,15 @@ int vm_exec(TyosVM_state* vm, char* code, unsigned int size) {
 				puterr(ERR_WARNING, "Alert!");
 				break;
 
+			case I_IF: {
+				if (vm_check_top(vm)) {
+					vm->ip = *(int*)&code[vm->ip];
+					break;
+				}
+				vm->ip = *(int*)&code[vm->ip + sizeof(int)];
+			}
+				break;
+
 			case I_STORE: {
 				struct Object obj;
 				if (vm->top > 0 && (int)code[vm->ip] <= array_size(vm->registers)) {
@@ -270,6 +279,26 @@ int vm_puterr(int err, const char* message) {
 	}
 	printf("[WARNING] %s\n", message);
 	return 1;
+}
+
+int vm_check_top(TyosVM_state* vm) {
+	if (vm->top > 0) {
+		const struct Object obj = stack_top();
+		switch (obj.type) {
+			case T_INT:
+				if (obj.value.n != 0)	/* returns true even if number is negative, just return 0 on 0 */
+					return 1;
+				break;
+
+			case T_STRING:
+				if (strlen(obj.value.s) >= 1)
+					return 1;
+				break;
+			default:
+				return 0;
+		}
+	}
+	return 0;
 }
 
 void vm_free(TyosVM_state* vm) {

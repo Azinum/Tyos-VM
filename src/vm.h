@@ -17,12 +17,13 @@ enum Instructions {
 	I_EXIT = 0,
 	I_SKIP,
 	I_ALERT,
+	I_IF,		/* if (goto (int)addr if true), (goto (int)addr if false) */
 	I_STORE,	/* (char)n */
 	I_PUSH_R,	/* (char)n */
-	I_CALL,	/* call (int)id */
+	I_CALL,		/* call (int)id */
 	I_RET,
-	I_DEF,	/* define (int)id, (int)size */
-	I_JUMP,	/* jump n (bytes) */
+	I_DEF,		/* define (int)id, (int)size */
+	I_JUMP,		/* jump n (bytes) */
 	I_PUSH_INT,	/* (int)n */
 	I_PUSH_STR,
 	I_POP,
@@ -80,6 +81,8 @@ TyosVM_state* vm_create();
 int vm_exec(TyosVM_state* vm, char* code, unsigned int size);
 
 int vm_puterr(int err, const char* message);
+
+int vm_check_top(TyosVM_state* vm);
 
 void vm_free(TyosVM_state* vm);
 
