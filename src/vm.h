@@ -7,7 +7,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-
+	
 #ifndef VM_H
 #define VM_H
 
@@ -17,13 +17,13 @@ enum Instructions {
 	I_EXIT = 0,
 	I_SKIP,
 	I_ALERT,
-	I_STORE,
-	I_PUSH_R,
+	I_STORE,	/* (char)n */
+	I_PUSH_R,	/* (char)n */
 	I_CALL,	/* call (int)id */
 	I_RET,
 	I_DEF,	/* define (int)id, (int)size */
 	I_JUMP,	/* jump n (bytes) */
-	I_PUSH_INT,
+	I_PUSH_INT,	/* (int)n */
 	I_PUSH_STR,
 	I_POP,
 
@@ -31,6 +31,12 @@ enum Instructions {
 	I_SUB,
 	I_MULT,
 	I_DIV,
+
+	I_EQ,	/* equal to */
+	I_LT,	/* less than */
+	I_GT,	/* greater than */
+	I_LEQ,	/* less or equal to */
+	I_GEQ,	/* greater or equal to */
 };
 
 

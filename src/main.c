@@ -6,21 +6,25 @@
 #include "vm.h"
 
 /*
+ 
+ push_int 1
+ if A, B
 
- push_int 24
- store 0    # store top to register 0
-
- push_r 0   # (int) 24
+ if true
+   goto addr A
+ if false
+   goto addr B
 
 */
 
 int main(int argc, const char* argv[]) {
 	char code[] = {
-		I_PUSH_INT, 78, 00, 00, 00,
-		I_STORE, 0,
+		I_PUSH_INT, 0x1, 0x0, 0x0, 0x0,
+		I_STORE, 0x0,
 		I_POP,
-		I_PUSH_R, 0,	/* push register 0 to stack */
-		I_POP,
+		I_PUSH_R, 0x0,
+		I_PUSH_INT, 0x5, 0x0, 0x0, 0x0,
+		I_LT,
 		I_EXIT
 	};
 

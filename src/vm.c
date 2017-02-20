@@ -5,7 +5,6 @@
 
 #include "vm.h"
 
-
 #define stack_push(obj) (vm->stack[++vm->top] = obj)
 
 #define stack_pop() (--vm->top)
@@ -22,6 +21,14 @@
 		break; \
 	} \
 } 
+
+#define op_arith2(op) { \
+	if (type_check(stack_get(-1), stack_top(), T_INT)) { \
+		stack_get(-1).value.n = stack_get(-1).value.n op stack_top().value.n; \
+		stack_pop(); \
+		break; \
+	} \
+}
 
 #define MAX_ITER 1024 << 14  /* ~16 million */
 
@@ -222,6 +229,26 @@ int vm_exec(TyosVM_state* vm, char* code, unsigned int size) {
 
 			case I_DIV:
 				op_arith(/=);
+				break;
+
+			case I_LT:
+				op_arith2(<);
+				break;
+
+			case I_GT:
+				op_arith2(>);
+				break;
+
+			case I_LEQ:
+				op_arith2(<=);
+				break;
+
+			case I_GEQ:
+				op_arith2(>=);
+				break;
+
+			case I_EQ:
+				op_arith2(==);
 				break;
 
 			case I_EXIT:
