@@ -18,6 +18,7 @@ enum Instructions {
 	I_SKIP,
 	I_ALERT,
 	I_STORE,
+	I_PUSH_R,
 	I_CALL,	/* call (int)id */
 	I_RET,
 	I_DEF,	/* define (int)id, (int)size */
@@ -30,9 +31,13 @@ enum Instructions {
 	I_SUB,
 	I_MULT,
 	I_DIV,
+};
 
+
+enum Types {
+	T_NULL = 0,
 	T_INT,
-	T_STRING,
+	T_STRING
 };
 
 typedef struct Object {

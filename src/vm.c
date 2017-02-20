@@ -91,6 +91,23 @@ int vm_exec(TyosVM_state* vm, char* code, unsigned int size) {
 			}
 				break;
 
+			case I_PUSH_R: {
+				char index = code[vm->ip];
+				if (index <= array_size(vm->registers)) {
+					if (!vm->registers[(int)index].type) {
+						printf("%s\n", "Failed to push register to stack. Register is null.");
+						return 0;
+					}
+
+					stack_push(vm->registers[(int)index]);
+					vm->ip++;
+					break;
+				}
+				printf("%s\n", "Invalid register index (index too big)");
+				return 0;
+			}
+				break;
+
 			case I_CALL: {
 				unsigned int id = *(int*)&code[vm->ip];
 				if (!vm->functions[id]) {
@@ -173,7 +190,7 @@ int vm_exec(TyosVM_state* vm, char* code, unsigned int size) {
 				break;
 
 			case I_POP: {
-				vm->top > 0 ? stack_pop() : printf("Failed to pop stack top\n");;
+				vm->top > 0 ? stack_pop() : printf("Failed to pop stack top\n");
 			}
 				break;
 

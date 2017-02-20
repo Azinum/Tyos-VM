@@ -16,9 +16,10 @@
 
 int main(int argc, const char* argv[]) {
 	char code[] = {
-		I_PUSH_INT, 18, 00, 00, 00,
+		I_PUSH_INT, 78, 00, 00, 00,
 		I_STORE, 0,
 		I_POP,
+		I_PUSH_R, 0,	/* push register 0 to stack */
 		I_EXIT
 	};
 
