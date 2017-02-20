@@ -40,6 +40,11 @@ enum Types {
 	T_STRING
 };
 
+enum {
+	ERR_FATAL,
+	ERR_WARNING
+};
+
 typedef struct Object {
 	union {
 		double n;
@@ -67,6 +72,8 @@ void vm_print_top(TyosVM_state* vm);
 TyosVM_state* vm_create();
 
 int vm_exec(TyosVM_state* vm, char* code, unsigned int size);
+
+int vm_puterr(int err, const char* message);
 
 void vm_free(TyosVM_state* vm);
 

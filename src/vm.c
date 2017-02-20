@@ -25,6 +25,8 @@
 
 #define MAX_ITER 1024 << 14  /* ~16 million */
 
+#define puterr(err, message) if (!vm_puterr(err, message)) return 0
+
 void vm_init(TyosVM_state* vm) {
 	vm->stack_size = array_size(vm->stack);
 	vm->top = 0;
@@ -76,7 +78,7 @@ int vm_exec(TyosVM_state* vm, char* code, unsigned int size) {
 				break;
 
 			case I_ALERT:
-				printf("ALERT(%i)\n", vm->ip);
+				puterr(ERR_WARNING, "Alert!");
 				break;
 
 			case I_STORE: {
@@ -87,7 +89,7 @@ int vm_exec(TyosVM_state* vm, char* code, unsigned int size) {
 					vm->ip++;
 					break;
 				}
-				printf("%s\n", "Store instruction failed");
+				puterr(ERR_FATAL, "Failed to store data to register.");
 			}
 				break;
 
@@ -95,24 +97,21 @@ int vm_exec(TyosVM_state* vm, char* code, unsigned int size) {
 				char index = code[vm->ip];
 				if (index <= array_size(vm->registers)) {
 					if (!vm->registers[(int)index].type) {
-						printf("%s\n", "Failed to push register to stack. Register is null.");
-						return 0;
+						puterr(ERR_FATAL, "Failed to push register to stack. Register is null.");
 					}
 
 					stack_push(vm->registers[(int)index]);
 					vm->ip++;
 					break;
 				}
-				printf("%s\n", "Invalid register index (index too big)");
-				return 0;
+				puterr(ERR_FATAL, "Invalid register index (index too big)");
 			}
 				break;
 
 			case I_CALL: {
 				unsigned int id = *(int*)&code[vm->ip];
 				if (!vm->functions[id]) {
-					printf("%s\n", "Failed to do call. Function does not exist.");
-					return 0;
+					puterr(ERR_FATAL, "Failed to do call. Function does not exist.");
 				}
 				vm->ret_addr = vm->ip + sizeof(int);
 				vm->ip = vm->functions[id];
@@ -137,8 +136,7 @@ int vm_exec(TyosVM_state* vm, char* code, unsigned int size) {
 				}
 
 				if (vm->functions[id]) {
-					printf("Failed to allocate function. Address is already in use.\n");
-					return 0;
+					puterr(ERR_FATAL, "Failed to allocate function. Address is already in use.");
 				}
 
 				if (vm->ip + size > prog_size) {
@@ -171,8 +169,7 @@ int vm_exec(TyosVM_state* vm, char* code, unsigned int size) {
 						break;
 					}
 					if (size > MAX_ITER || size > prog_size) {
-						printf("(ip: %i) %s\n", vm->ip, "Iteration limit reached! Forgot to null terminate string?");
-						return 0;
+						puterr(ERR_FATAL, "Iteration limit reached! Forgot to null terminate string?");
 					}
 					size++;
 				};
@@ -190,7 +187,11 @@ int vm_exec(TyosVM_state* vm, char* code, unsigned int size) {
 				break;
 
 			case I_POP: {
-				vm->top > 0 ? stack_pop() : printf("Failed to pop stack top\n");
+				if (vm->top > 0) {
+					stack_pop();
+					break;
+				}
+				puterr(ERR_WARNING, "Failed to pop stack top (stack top is at 0).");
 			}
 				break;
 
@@ -232,6 +233,15 @@ int vm_exec(TyosVM_state* vm, char* code, unsigned int size) {
 		}
 	}
 
+	return 1;
+}
+
+int vm_puterr(int err, const char* message) {
+	if (err == ERR_FATAL) {
+		printf("[FATAL ERROR] %s\n", message);
+		return 0;
+	}
+	printf("[WARNING] %s\n", message);
 	return 1;
 }
 

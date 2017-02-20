@@ -20,6 +20,7 @@ int main(int argc, const char* argv[]) {
 		I_STORE, 0,
 		I_POP,
 		I_PUSH_R, 0,	/* push register 0 to stack */
+		I_POP,
 		I_EXIT
 	};
 
